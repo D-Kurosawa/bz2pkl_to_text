@@ -4,17 +4,12 @@ import pickle
 import sys
 from pathlib import Path
 
-from src import elaptime as et
 
-
-@et.app_time
 def main():
     file = CmdLineArgFile()
     file.get_info()
 
-    print(file.path)
-    print(file.name)
-
+    print(f"\nDecompress file : {Path(file.path).name}")
     decompressed = load_compress_file(file.path)
     print(decompressed)
 
