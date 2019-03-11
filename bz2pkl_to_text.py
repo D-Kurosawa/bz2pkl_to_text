@@ -46,6 +46,13 @@ class CmdLineArgFile:
         if not Path(self.path).is_file():
             raise FileExistsError(self.path)
 
+    def _get_file_name(self):
+        self.name = self.path
+
+        exts = Path(self.name).suffixes
+        for ext in exts:
+            self.name = self.name.replace(ext, '')
+
 
 if __name__ == '__main__':
     main()
