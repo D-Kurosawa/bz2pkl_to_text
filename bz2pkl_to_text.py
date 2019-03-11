@@ -4,14 +4,19 @@ import pickle
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 
 def main():
     file = CmdLineArgFile()
     file.get_info()
 
-    print(f"\nDecompress file : {Path(file.path).name}")
+    print(f"\n>> Decompress file : {Path(file.path).name}")
     decompressed = load_compress_file(file.path)
-    print(decompressed)
+
+    print(f">> Save file       : {Path(file.name)}.tsv")
+    text = ToText(decompressed, file.name)
+    text.save()
 
 
 def load_compress_file(file_name):
@@ -58,6 +63,19 @@ class CmdLineArgFile:
         exts = Path(self.name).suffixes
         for ext in exts:
             self.name = self.name.replace(ext, '')
+
+
+class ToText:
+    def __init__(self, obj, filename):
+        self.obj = obj
+        self.file = f"{filename}.tsv"
+
+    def save(self):
+        if isinstance(self.obj, (pd.Series, pd.DataFrame)):
+            self._save_pandas()
+
+    def _save_pandas(self):
+        self.obj.to_csv(self.file, sep='\t', encoding='utf-8')
 
 
 if __name__ == '__main__':
