@@ -1,17 +1,23 @@
 """Document"""
+import bz2
+import pickle
 import sys
 from pathlib import Path
 
-from src import elaptime as et
 
-
-@et.app_time
 def main():
     file = CmdLineArgFile()
     file.get_info()
 
-    print(file.path)
-    print(file.name)
+    print(f"\nDecompress file : {Path(file.path).name}")
+    decompressed = load_compress_file(file.path)
+    print(decompressed)
+
+
+def load_compress_file(file_name):
+    with bz2.BZ2File(file_name, 'rb') as f:
+        pkl = f.read()
+    return pickle.loads(pkl)
 
 
 class CmdLineArgFile:
