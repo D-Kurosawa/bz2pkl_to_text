@@ -25,10 +25,17 @@ def load_compress_file(file_name):
     return pickle.loads(pkl)
 
 
+class Params:
+    extensions = [
+        '.pkl',
+        '.bz2'
+    ]
+
+
 class CmdLineArgFile:
     """
-    :type path: str
-    :type name: str
+    :type path: str | None
+    :type name: str | None
     """
 
     def __init__(self):
@@ -62,7 +69,8 @@ class CmdLineArgFile:
 
         exts = Path(self.name).suffixes
         for ext in exts:
-            self.name = self.name.replace(ext, '')
+            if ext in Params.extensions:
+                self.name = self.name.replace(ext, '')
 
 
 class ToText:
@@ -73,6 +81,9 @@ class ToText:
     def save(self):
         if isinstance(self.obj, (pd.Series, pd.DataFrame)):
             self._save_pandas()
+            return
+
+        raise TypeError(f"{type(self.obj)} is not compatible")
 
     def _save_pandas(self):
         self.obj.to_csv(self.file, sep='\t', encoding='utf-8')
